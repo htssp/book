@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LitQuest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% if books %}results-page{% endif %}">
+    <div class="container">
+        <h1>LitQuest</h1>
+
+        <!-- 🔹 Genre Bar -->
+        <div class="genre-bar">
+            <a href="/?genre=Fiction" {% if query == "Fiction" %}class="active"{% endif %}>Fiction</a>
+            <a href="/?genre=Science" {% if query == "Science" %}class="active"{% endif %}>Science</a>
+            <a href="/?genre=History" {% if query == "History" %}class="active"{% endif %}>History</a>
+            <a href="/?genre=Fantasy" {% if query == "Fantasy" %}class="active"{% endif %}>Fantasy</a>
+            <a href="/?genre=Technology" {% if query == "Technology" %}class="active"{% endif %}>Technology</a>
+        </div>
+
+        <!-- 🔹 Search Box -->
+        <form method="POST">
+            <input type="text" name="query" value="{{ query }}" placeholder="Enter book or keyword" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- 🔹 Search Results -->
+        {% if books %}
+        <div class="results">
+            {% for book in books %}
+            <div class="card">
+                {% if book.thumbnail %}
+                <img src="{{ book.thumbnail }}" alt="Book cover">
+                {% endif %}
+                <h2>{{ book.title }}</h2>
+                <p><b>Authors:</b> {{ book.authors }}</p>
+                <p>{{ book.description[:200] }}...</p>
+                <a href="{{ book.link }}" target="_blank">More Info</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 🔹 Popular Books (only when no search/genre) -->
+        {% if popular %}
+        <div class="popular-section">
+            <h2> Popular Books {% if popular_query %} ({{ popular_query | title }}) {% endif %}</h2>
+            <div class="results">
+                {% for book in popular %}
+                <div class="card">
+                    {% if book.thumbnail %}
+                    <img src="{{ book.thumbnail }}" alt="Book cover">
+                    {% endif %}
+                    <h3>{{ book.title }}</h3>
+                    <p><b>Authors:</b> {{ book.authors }}</p>
+                    <a href="{{ book.link }}" target="_blank">More Info</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>
